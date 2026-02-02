@@ -89,10 +89,7 @@ namespace TomaToro
         // This should be called **ONCE**!
         void SetupSession()
         {
-            Int32.TryParse(txtStudyTimer.Text, out studySessionTime);
-            Int32.TryParse(txtShortBreakTimer.Text, out shortBreakTime);
-            Int32.TryParse(txtLongBreakTimer.Text, out longBreakTime);
-            Int32.TryParse(txtLongBreakInterval.Text, out longBreakInterval);
+            UpdateSession();
 
             timer = Dispatcher.CreateTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -103,7 +100,7 @@ namespace TomaToro
             setupComplete = true;
         }
 
-        // This can be called **ANYTIME**! Preferably when we've updated the entries
+        // This can be called **ANYTIME**! Preferably when we've updated the entries when running the app
         void UpdateSession()
         {
             Int32.TryParse(txtStudyTimer.Text, out studySessionTime);
