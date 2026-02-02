@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TomaToro.MainPage">
+
+
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="15,0"
+            Spacing="5">
+
+            <Label Text="Time (minutes)"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Study -->
+                <Label Text="Study"
+                       Grid.Column="0"
+                       Grid.Row="0"
+                       HorizontalOptions="Center"/>
+                <Entry 
+                    x:Name="txtStudyTimer"
+                    Placeholder="Study"
+                    Keyboard="Numeric"
+                    Text="25"
+                    SemanticProperties.Hint="How long a study session should be"
+                    Grid.Column="0"
+                    Grid.Row="2"/>
+
+                <!-- Short break -->
+                <Label Text="Short break"
+                       Grid.Column="1"
+                       Grid.Row="0"
+                       HorizontalOptions="Center"/>
+                <Entry 
+                    x:Name="txtShortBreakTimer"
+                    Placeholder="Short Break"
+                    Keyboard="Numeric"
+                    Text="5"
+                    SemanticProperties.Hint="How long a short break should be between study sessions"
+                    Grid.Column="1"
+                    Grid.Row="2"/>
+
+                <!-- Long break -->
+                <Label Text="Long break"
+                       Grid.Column="2"
+                       Grid.Row="0"
+                       HorizontalOptions="Center"/>
+                <Entry
+                    x:Name="txtLongBreakTimer"
+                    Placeholder="Long Break"
+                    Keyboard="Numeric"
+                    Text="15"
+                    SemanticProperties.Hint="How long a long break should be after a study interval"
+                    Grid.Column="2"
+                    Grid.Row="2"/>
+            </Grid>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Long Break Interval -->
+                <Label Text="Long Break Interval"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       VerticalOptions="Center"/>
+                <Entry
+                    x:Name="txtLongBreakInterval"
+                    Placeholder="Interval"
+                    Keyboard="Numeric"
+                    Text="4"
+                    SemanticProperties.Hint="How many study sessions before a long break"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalOptions="End"/>
+
+                <!-- Auto-Start Sessions -->
+                <!-- <Label Text="Auto-start Sessions"
+                       Grid.Row="1"
+                       Grid.Column="0"
+                       VerticalOptions="Center"/>
+                <Switch
+                    Toggled="OnAutoStartSessionsToggled"
+                    x:Name="swAutoStartSessions"
+                    OffColor="LightGray"
+                    OnColor="Green"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalOptions="End"/> -->
+
+                <!-- Auto-Start Breaks -->
+                <!-- <Label Text="Auto-start Breaks"
+                       Grid.Row="2"
+                       Grid.Column="0"
+                       VerticalOptions="Center"/>
+                <Switch
+                    Toggled="OnAutoStartBreaksToggled"
+                    x:Name="swAutoStartBreaks"
+                    OffColor="LightGray"
+                    OnColor="Green"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    HorizontalOptions="End"/> -->
+            </Grid>
+
+            <Label x:Name="lbWarning"
+                   HorizontalOptions="Center"/>
+
+            <!-- Timer -->
+            <Label x:Name="lbTimer"
+                   HorizontalOptions="Center"
+                   Text="00:00"/>
+            
+            <!-- Start timer -->
+            <Button
+                x:Name="StartTimerBtn"
+                Text="START"
+                SemanticProperties.Hint="Start the Pomodoro Timer"
+                Clicked="OnStartTimerClicked"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
