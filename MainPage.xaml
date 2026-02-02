@@ -36,8 +36,8 @@
                     Grid.Column="0"
                     Grid.Row="2"/>
 
-                <!-- Short break -->
-                <Label Text="Short break"
+                <!-- Short Break -->
+                <Label Text="Short Break"
                        Grid.Column="1"
                        Grid.Row="0"
                        HorizontalOptions="Center"/>
@@ -50,8 +50,8 @@
                     Grid.Column="1"
                     Grid.Row="2"/>
 
-                <!-- Long break -->
-                <Label Text="Long break"
+                <!-- Long Break -->
+                <Label Text="Long Break"
                        Grid.Column="2"
                        Grid.Row="0"
                        HorizontalOptions="Center"/>
@@ -118,13 +118,20 @@
                     HorizontalOptions="End"/> -->
             </Grid>
 
+            <Label x:Name="lbSessionCounter"
+                   HorizontalOptions="Center"/>
+
+            <Label x:Name="lbSessionType"
+                   HorizontalOptions="Center"/>
+
             <Label x:Name="lbWarning"
                    HorizontalOptions="Center"/>
 
             <!-- Timer -->
             <Label x:Name="lbTimer"
                    HorizontalOptions="Center"
-                   Text="00:00"/>
+                   Text="00:00"
+                   FontSize="60"/>
             
             <!-- Start timer -->
             <Button
