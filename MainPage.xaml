@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TomaToro.MainPage">
+             x:Class="TomaToro.MainPage"
+             Title="TomaToro">
 
 
 
@@ -59,7 +60,7 @@
                     x:Name="txtLongBreakTimer"
                     Placeholder="Long Break"
                     Keyboard="Numeric"
-                    Text="15"
+                    Text="10"
                     SemanticProperties.Hint="How long a long break should be after a study interval"
                     Grid.Column="2"
                     Grid.Row="2"/>
@@ -124,22 +125,38 @@
             <Label x:Name="lbSessionType"
                    HorizontalOptions="Center"/>
 
-            <Label x:Name="lbWarning"
-                   HorizontalOptions="Center"/>
-
             <!-- Timer -->
             <Label x:Name="lbTimer"
                    HorizontalOptions="Center"
                    Text="00:00"
                    FontSize="60"/>
-            
-            <!-- Start timer -->
-            <Button
-                x:Name="StartTimerBtn"
-                Text="START"
-                SemanticProperties.Hint="Start the Pomodoro Timer"
-                Clicked="OnStartTimerClicked"
-                HorizontalOptions="Center" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition FlexLayout.AlignSelf="Center"/>
+                    <ColumnDefinition FlexLayout.AlignSelf="Center"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Start timer -->
+                <Button
+                    x:Name="TimerBtn"
+                    Text="START"
+                    SemanticProperties.Hint="Start/Stop the timer"
+                    Clicked="OnTimerBtnClicked"
+                    Grid.Column="0"/>
+                
+                <!-- Skip Session -->
+                <Button
+                    x:Name="SkipSessionBtn"
+                    Text="SKIP"
+                    SemanticProperties.Hint="Skip the current session/break"
+                    Clicked="OnSkipSessionBtnClicked"
+                    Grid.Column="1"/>
+            </Grid>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

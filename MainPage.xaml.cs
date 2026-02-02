@@ -1,10 +1,10 @@
-﻿using Android.App;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace TomaToro
 {
     public partial class MainPage : ContentPage
     {
+        bool setupComplete = false;
         int studySessionTime = 0;
         int shortBreakTime = 0;
         int longBreakTime = 0;
@@ -12,7 +12,7 @@ namespace TomaToro
         int totalStudyCounter = 1; // how many times we've studied IN TOTAL (we start with the first session...)
         int currentStudyCounter = 1; // how many times we've studied in one interval
 
-        int longBreakInterval = 0; // use with studyCounter to find out when we need to switch to long break
+        int longBreakInterval = 0; // used with currentStudyCounter; to find out when we need to switch to long breaks
 
         //bool autoStartSessions = false;
         //bool autoStartBreaks = false;
@@ -40,30 +40,50 @@ namespace TomaToro
         public MainPage()
         {
             InitializeComponent();
-            ShowSessionProgress();
+            SetupSession();
         }
 
-        private void OnStartTimerClicked(object? sender, EventArgs e)
+        private void OnTimerBtnClicked(object? sender, EventArgs e)
         {
-            if (txtStudyTimer.Text != String.Empty && txtShortBreakTimer.Text != String.Empty &&
-                txtLongBreakTimer.Text != String.Empty && txtLongBreakInterval.Text != String.Empty)
+            if (setupComplete == true)
             {
-                SetupSession();
+                if (!timer.IsRunning)
+                {
+                    timer.Start();
+                    TimerBtn.Text = "STOP";
+                }
+                else
+                {
+                    timer.Stop();
+                    TimerBtn.Text = "START";
+                }
             }
             else
             {
-                lbWarning.Text = "Please fill in the blank textboxes!";
-                lbWarning.TextColor = Color.FromArgb("FF0000");
+                timer.Start();
             }
+        }
 
-            UpdateSessionProgress();
-
-            if (currentStudyCounter >= longBreakInterval)
+        private void OnSkipSessionBtnClicked(object? sender, EventArgs e)
+        {
+            if (timer.IsRunning)
             {
-                currentStudyCounter = 0;
+                timer.Stop();
+                TimerBtn.Text = "START";
             }
 
-            timer.Start();
+            if (progress == (int)PROGRESS.Study)
+            {
+                progress += 1;
+            }
+            else if (progress == (int)PROGRESS.Break)
+            {
+                totalStudyCounter++;
+                currentStudyCounter++;
+                progress = 1;
+            }
+            
+            UpdateSessionProgress();
         }
 
         void SetupSession()
@@ -72,15 +92,23 @@ namespace TomaToro
             Int32.TryParse(txtShortBreakTimer.Text, out shortBreakTime);
             Int32.TryParse(txtLongBreakTimer.Text, out longBreakTime);
             Int32.TryParse(txtLongBreakInterval.Text, out longBreakInterval);
-
+            
             timer = Dispatcher.CreateTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += (s, e) => OnTick();
+
+            UpdateSessionProgress();
+            
+            setupComplete = true;
         }
 
         void OnTick()
         {
-            secondsLeft--;
+            if (timer.IsRunning)
+            {
+                secondsLeft--;
+                TimerBtn.Text = "STOP";
+            }
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -95,14 +123,14 @@ namespace TomaToro
                         totalStudyCounter++;
                         currentStudyCounter++;
                         progress = 1;
-                        ShowSessionProgress();
+                        UpdateSessionProgress();
                     }
                     else if (progress == 1)
                     {
                         timer.Stop();
                         DisplayAlertAsync("Alert", "Study time over, time to take a break!", "Okay");
                         progress += 1;
-                        ShowSessionProgress();
+                        UpdateSessionProgress();
                     }
                 }
             });
@@ -137,16 +165,23 @@ namespace TomaToro
 
             secondsLeft *= 60;
 
+            if (currentStudyCounter >= longBreakInterval)
+            {
+                currentStudyCounter = 0;
+            }
+
             ShowSessionProgress();
         }
 
         void ShowSessionProgress()
         {
+            lbTimer.Text = string.Format("{0:00}:{1:00}", secondsLeft / 60, (Math.Abs(secondsLeft)) % 60);
+
             if (progress == (int)PROGRESS.Study)
             {
                 lbSessionType.Text = "STUDY";
             }
-            else if (progress == (int)PROGRESS.Break)
+            else
             {
                 if (breakType == (int)BREAK_TYPE.ShortBreak)
                 {
