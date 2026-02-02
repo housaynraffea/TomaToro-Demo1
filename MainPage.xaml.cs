@@ -9,10 +9,10 @@ namespace TomaToro
         int shortBreakTime = 0;
         int longBreakTime = 0;
 
-        int totalStudyCounter = 1; // how many times we've studied IN TOTAL (we start with the first session...)
-        int currentStudyCounter = 1; // how many times we've studied in one interval
+        int totalStudyCounter = 1; // How many times we've studied IN TOTAL (we start with the first session...)
+        int currentStudyCounter = 1; // How many times we've studied in one interval (has to be reset if we go over the interval limit)
 
-        int longBreakInterval = 0; // used with currentStudyCounter; to find out when we need to switch to long breaks
+        int longBreakInterval = 0;
 
         //bool autoStartSessions = false;
         //bool autoStartBreaks = false;
@@ -86,13 +86,14 @@ namespace TomaToro
             UpdateSessionProgress();
         }
 
+        // This should be called **ONCE**!
         void SetupSession()
         {
             Int32.TryParse(txtStudyTimer.Text, out studySessionTime);
             Int32.TryParse(txtShortBreakTimer.Text, out shortBreakTime);
             Int32.TryParse(txtLongBreakTimer.Text, out longBreakTime);
             Int32.TryParse(txtLongBreakInterval.Text, out longBreakInterval);
-            
+
             timer = Dispatcher.CreateTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += (s, e) => OnTick();
@@ -100,6 +101,15 @@ namespace TomaToro
             UpdateSessionProgress();
             
             setupComplete = true;
+        }
+
+        // This can be called **ANYTIME**! Preferably when we've updated the entries
+        void UpdateSession()
+        {
+            Int32.TryParse(txtStudyTimer.Text, out studySessionTime);
+            Int32.TryParse(txtShortBreakTimer.Text, out shortBreakTime);
+            Int32.TryParse(txtLongBreakTimer.Text, out longBreakTime);
+            Int32.TryParse(txtLongBreakInterval.Text, out longBreakInterval);
         }
 
         void OnTick()
@@ -138,6 +148,8 @@ namespace TomaToro
 
         void UpdateSessionProgress()
         {
+            UpdateSession();
+
             if (progress == (int)PROGRESS.Study)
             {
                 secondsLeft = studySessionTime;
