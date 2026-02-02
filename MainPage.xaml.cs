@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Android.App;
+using System.Diagnostics;
 
 namespace TomaToro
 {
@@ -35,8 +36,6 @@ namespace TomaToro
         int secondsLeft = 1;
 
         IDispatcherTimer timer;
-
-        bool isTimerRunning = false;
 
         public MainPage()
         {
@@ -114,8 +113,6 @@ namespace TomaToro
             if (progress == (int)PROGRESS.Study)
             {
                 secondsLeft = studySessionTime;
-                
-                //lbSessionType.Text = "STUDY";
             }
             else if (progress == (int)PROGRESS.Break)
             {
@@ -131,16 +128,14 @@ namespace TomaToro
                 if (breakType == (int)BREAK_TYPE.ShortBreak)
                 {
                     secondsLeft = shortBreakTime;
-                    //lbSessionType.Text = "SHORT BREAK";
                 }
                 else
                 {
                     secondsLeft = longBreakTime;
-                    //lbSessionType.Text = "LONG BREAK";
                 }
             }
 
-            secondsLeft *= 1;// 60;
+            secondsLeft *= 60;
 
             ShowSessionProgress();
         }
