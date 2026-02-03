@@ -7,6 +7,4 @@ NOTE: This demonstration doesn't include an 'alarm' or a notification of sorts, 
 
 NOTE: the 'Auto-start' features are commented. This was a simple case of my own overcomplifications and overscoping leading to these features being cut from the demonstration. However, if you'd like an extra challenge, you can add them in yourself!
 
-NOTE: Parsing hasn't been implemented yet (which isn't good ...), but will probably not be considered in the future since this is intended to be a simple demonstration. As always, you can improve upon the code if you'd like to.
-
-<img width="482" height="751" alt="TomaToro_71LHkbqwSY" src="https://github.com/user-attachments/assets/a1a52e84-f9eb-4cef-9f8f-92d06f6aa9ed" />
+<img width="404" height="751" alt="TomaToro_XnneYjd3Sr" src="https://github.com/user-attachments/assets/d7ca8470-625c-4a47-aab9-472da2312b88" />
