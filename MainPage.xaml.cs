@@ -112,10 +112,7 @@ namespace TomaToro
         void OnTick()
         {
             if (timer.IsRunning)
-            {
                 secondsLeft--;
-                TimerBtn.Text = "STOP";
-            }
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -123,22 +120,24 @@ namespace TomaToro
 
                 if (secondsLeft <= 0)
                 {
+                    timer.Stop();
+                    
                     if (progress == 2)
                     {
-                        timer.Stop();
                         DisplayAlertAsync("Alert", "Break time over, time to study!", "Okay");
+                        
                         totalStudyCounter++;
                         currentStudyCounter++;
                         progress = 1;
-                        UpdateSessionProgress();
                     }
                     else if (progress == 1)
                     {
-                        timer.Stop();
                         DisplayAlertAsync("Alert", "Study time over, time to take a break!", "Okay");
+
                         progress += 1;
-                        UpdateSessionProgress();
                     }
+
+                    UpdateSessionProgress();
                 }
             });
         }
@@ -177,6 +176,15 @@ namespace TomaToro
             if (currentStudyCounter >= longBreakInterval)
             {
                 currentStudyCounter = 0;
+            }
+
+            if (timer.IsRunning)
+            {
+                TimerBtn.Text = "STOP";
+            }
+            else
+            {
+                TimerBtn.Text = "START";
             }
 
             ShowSessionProgress();
