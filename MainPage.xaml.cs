@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Plugin.LocalNotification;
+using System.Diagnostics;
 
 namespace TomaToro
 {
@@ -36,6 +37,7 @@ namespace TomaToro
         int secondsLeft = 1;
 
         IDispatcherTimer timer;
+        DateTime backgroundTime;
 
         public MainPage()
         {
@@ -51,11 +53,15 @@ namespace TomaToro
                 {
                     timer.Start();
                     TimerBtn.Text = "STOP";
+
+                    ScheduleNotification(secondsLeft);
                 }
                 else
                 {
                     timer.Stop();
                     TimerBtn.Text = "START";
+
+                    LocalNotificationCenter.Current.Cancel(100);
                 }
             }
             else
@@ -114,32 +120,7 @@ namespace TomaToro
             if (timer.IsRunning)
                 secondsLeft--;
 
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                lbTimer.Text = string.Format("{0:00}:{1:00}", secondsLeft / 60, (Math.Abs(secondsLeft)) % 60);
-
-                if (secondsLeft <= 0)
-                {
-                    timer.Stop();
-                    
-                    if (progress == 2)
-                    {
-                        DisplayAlertAsync("Alert", "Break time over, time to study!", "Okay");
-                        
-                        totalStudyCounter++;
-                        currentStudyCounter++;
-                        progress = 1;
-                    }
-                    else if (progress == 1)
-                    {
-                        DisplayAlertAsync("Alert", "Study time over, time to take a break!", "Okay");
-
-                        progress += 1;
-                    }
-
-                    UpdateSessionProgress();
-                }
-            });
+            lbTimer.Text = string.Format("{0:00}:{1:00}", secondsLeft / 60, (Math.Abs(secondsLeft)) % 60);
         }
 
         void UpdateSessionProgress()
@@ -211,6 +192,72 @@ namespace TomaToro
             }
 
             lbSessionCounter.Text = $"Session #{totalStudyCounter}";
+        }
+
+        void ScheduleNotification(int secondsLeft)
+        {
+            string titleText;
+            string descriptionText;
+
+            if (progress == (int)PROGRESS.Study)
+            {
+                titleText = "Study time over!";
+                descriptionText = "Time to take a break!";
+            }
+            else
+            {
+                titleText = "Break time over!";
+                descriptionText = "Time to study!";
+            }
+
+            var request = new NotificationRequest
+            {
+                NotificationId = 100,
+                Title = titleText,
+                Description = descriptionText,
+                BadgeNumber = 42,
+                Schedule = new NotificationRequestSchedule
+                {
+                    NotifyTime = DateTime.Now.AddSeconds(secondsLeft)
+                }
+            };
+
+            LocalNotificationCenter.Current.Show(request);
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (timer.IsRunning && backgroundTime != default)
+            {
+                var backgroundElapsedTime = DateTime.Now - backgroundTime;
+                secondsLeft -= (int) backgroundElapsedTime.TotalSeconds;
+            }
+
+            if (secondsLeft <= 0)
+            {
+                timer.Stop();
+
+                if (progress == 2)
+                {
+                    totalStudyCounter++;
+                    currentStudyCounter++;
+                    progress = 1;
+                }
+                else if (progress == 1)
+                {
+                    progress += 1;
+                }
+
+                UpdateSessionProgress();
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            backgroundTime = DateTime.Now;
         }
 
         /*
