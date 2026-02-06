@@ -1,10 +1,10 @@
-﻿using Plugin.LocalNotification;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace TomaToro
 {
     public partial class MainPage : ContentPage
     {
+        #region initial variables
         bool setupComplete = false;
         int studySessionTime = 0;
         int shortBreakTime = 0;
@@ -14,9 +14,6 @@ namespace TomaToro
         int currentStudyCounter = 1; // How many times we've studied in one interval (has to be reset if we go over the interval limit)
 
         int longBreakInterval = 0;
-
-        //bool autoStartSessions = false;
-        //bool autoStartBreaks = false;
 
         enum PROGRESS
         {
@@ -37,7 +34,7 @@ namespace TomaToro
         int secondsLeft = 1;
 
         IDispatcherTimer timer;
-        DateTime backgroundTime;
+        #endregion
 
         public MainPage()
         {
@@ -53,15 +50,11 @@ namespace TomaToro
                 {
                     timer.Start();
                     TimerBtn.Text = "STOP";
-
-                    ScheduleNotification(secondsLeft);
                 }
                 else
                 {
                     timer.Stop();
                     TimerBtn.Text = "START";
-
-                    LocalNotificationCenter.Current.Cancel(100);
                 }
             }
             else
@@ -121,12 +114,16 @@ namespace TomaToro
                 secondsLeft--;
 
             lbTimer.Text = string.Format("{0:00}:{1:00}", secondsLeft / 60, (Math.Abs(secondsLeft)) % 60);
+
+            if (secondsLeft <= 0)
+                EndSession();
         }
 
         void UpdateSessionProgress()
         {
             UpdateSession();
 
+            #region enumerator checks
             if (progress == (int)PROGRESS.Study)
             {
                 secondsLeft = studySessionTime;
@@ -151,6 +148,7 @@ namespace TomaToro
                     secondsLeft = longBreakTime;
                 }
             }
+            #endregion
 
             secondsLeft *= 60;
 
@@ -194,81 +192,26 @@ namespace TomaToro
             lbSessionCounter.Text = $"Session #{totalStudyCounter}";
         }
 
-        void ScheduleNotification(int secondsLeft)
+        void EndSession()
         {
-            string titleText;
-            string descriptionText;
+            timer.Stop();
+            secondsLeft = 0;
 
-            if (progress == (int)PROGRESS.Study)
+            if (progress == (int)PROGRESS.Break)
             {
-                titleText = "Study time over!";
-                descriptionText = "Time to take a break!";
+                DisplayAlertAsync("Alert", "Break time is over, time to study!", "Okay");
+
+                totalStudyCounter++;
+                currentStudyCounter++;
+                progress = 1;
             }
             else
             {
-                titleText = "Break time over!";
-                descriptionText = "Time to study!";
+                DisplayAlertAsync("Alert", "Study time is over, time to take a break!", "Okay");
+                progress += 1;
             }
 
-            var request = new NotificationRequest
-            {
-                NotificationId = 100,
-                Title = titleText,
-                Description = descriptionText,
-                BadgeNumber = 42,
-                Schedule = new NotificationRequestSchedule
-                {
-                    NotifyTime = DateTime.Now.AddSeconds(secondsLeft)
-                }
-            };
-
-            LocalNotificationCenter.Current.Show(request);
+            UpdateSessionProgress();
         }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            if (timer.IsRunning && backgroundTime != default)
-            {
-                var backgroundElapsedTime = DateTime.Now - backgroundTime;
-                secondsLeft -= (int) backgroundElapsedTime.TotalSeconds;
-            }
-
-            if (secondsLeft <= 0)
-            {
-                timer.Stop();
-
-                if (progress == 2)
-                {
-                    totalStudyCounter++;
-                    currentStudyCounter++;
-                    progress = 1;
-                }
-                else if (progress == 1)
-                {
-                    progress += 1;
-                }
-
-                UpdateSessionProgress();
-            }
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            backgroundTime = DateTime.Now;
-        }
-
-        /*
-        void OnAutoStartSessionsToggled(object? sender, EventArgs e)
-        {
-            autoStartSessions = swAutoStartSessions.IsToggled;
-        }
-        void OnAutoStartBreaksToggled(object? sender, EventArgs e)
-        {
-            autoStartBreaks = swAutoStartBreaks.IsToggled;
-        }
-        */
     }
 }
