@@ -33,7 +33,7 @@ namespace TomaToro
 
         int secondsLeft = 1;
 
-        IDispatcherTimer timer;
+        IDispatcherTimer timer; // will not work on the background!!
         #endregion
 
         public MainPage()
@@ -172,7 +172,8 @@ namespace TomaToro
         void ShowSessionProgress()
         {
             lbTimer.Text = string.Format("{0:00}:{1:00}", secondsLeft / 60, (Math.Abs(secondsLeft)) % 60);
-
+            
+            #region enumerator checks
             if (progress == (int)PROGRESS.Study)
             {
                 lbSessionType.Text = "STUDY";
@@ -188,6 +189,7 @@ namespace TomaToro
                     lbSessionType.Text = "LONG BREAK";
                 }
             }
+            #endregion
 
             lbSessionCounter.Text = $"Session #{totalStudyCounter}";
         }
