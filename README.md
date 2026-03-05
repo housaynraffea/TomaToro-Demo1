@@ -3,6 +3,6 @@ This is a short, but simple demonstration of a pomodoro timer app made in .NET M
 
 As soon as you press 'START', the program will pick up what number you wrote in the 'Study', 'Short Break', and 'Long Break' entries and create a timer. It will then display a popup when the timer has run out of time.
 
-NOTE: This demonstration doesn't include an 'alarm' or a notification of sorts, so the app is only limited to popups. Meaning you can actually RUN it in the background, you'll just not know if the timer has finished or not.
+NOTE: This demonstration doesn't include an 'alarm' or a notification of sorts, so the app is only limited to popups. Meaning you can actually RUN it in the background, with the only downside being that the IDispatcherTimer will stop working after some time in the background.
 
 <img width="404" height="751" alt="tt1" src="https://github.com/user-attachments/assets/b4f5eca4-50f8-4586-b53f-03a17828db7f" />
