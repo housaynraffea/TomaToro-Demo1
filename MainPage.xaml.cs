@@ -33,7 +33,7 @@ namespace TomaToro
 
         int secondsLeft = 1;
 
-        IDispatcherTimer timer; // will not work on the background!!
+        public required IDispatcherTimer timer;
         #endregion
 
         public MainPage()

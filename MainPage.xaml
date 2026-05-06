@@ -4,8 +4,6 @@
              x:Class="TomaToro.MainPage"
              Title="TomaToro">
 
-
-
     <ScrollView>
         <VerticalStackLayout
             Padding="15,0"
